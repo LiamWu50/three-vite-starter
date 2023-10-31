@@ -1,12 +1,11 @@
 import {
-  ACESFilmicToneMapping,
-  AmbientLight,
-  DirectionalLight,
+  AxesHelper,
+  BoxGeometry,
+  Mesh,
+  MeshNormalMaterial,
   PerspectiveCamera,
   Scene,
-  Vector2,
   Vector3,
-  VSMShadowMap,
   WebGLRenderer
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
@@ -16,12 +15,10 @@ export default new (class ThreeSceneCreator {
   public camera!: THREE.PerspectiveCamera
   private renderer!: THREE.WebGLRenderer
   private controls!: OrbitControls
-  public gridSize!: Vector2
   private sizes!: { width: number; height: number }
   public container!: HTMLDivElement
 
   constructor() {
-    this.gridSize = new Vector2(9, 9)
     this.sizes = {
       width: window.innerWidth,
       height: window.innerHeight
@@ -37,7 +34,6 @@ export default new (class ThreeSceneCreator {
     this.createScene()
     this.createCamera()
     this.createRenderer()
-    this.createLight()
     this.createControls()
 
     this.tic()
@@ -50,6 +46,15 @@ export default new (class ThreeSceneCreator {
    */
   private createScene() {
     this.scene = new Scene()
+
+    const material = new MeshNormalMaterial()
+    const geometry = new BoxGeometry(1, 1, 1)
+
+    const mesh = new Mesh(geometry, material)
+    this.scene.add(mesh)
+
+    const axesHelper = new AxesHelper(3)
+    this.scene.add(axesHelper)
   }
 
   /**
@@ -59,13 +64,8 @@ export default new (class ThreeSceneCreator {
     const fov = 60
     const aspect = this.sizes.width / this.sizes.height
     this.camera = new PerspectiveCamera(fov, aspect, 0.1)
-    this.camera.position.copy(
-      new Vector3(
-        this.gridSize.x / 2 - 2,
-        this.gridSize.x / 2 + 4.5,
-        this.gridSize.y + 1.7
-      )
-    )
+    this.camera.position.set(4, 4, 4)
+    this.camera.lookAt(new Vector3(0, 2.5, 0))
   }
 
   /**
@@ -78,35 +78,8 @@ export default new (class ThreeSceneCreator {
     })
 
     this.container.appendChild(renderer.domElement)
-
-    renderer.toneMapping = ACESFilmicToneMapping
-    renderer.toneMappingExposure = 1.2
-    renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = VSMShadowMap
     this.renderer = renderer
     this.handleResize()
-  }
-
-  /**
-   * 创建光源
-   */
-  private createLight() {
-    const ambLight = new AmbientLight(0xffffff, 0.6)
-    const dirLight = new DirectionalLight(0xffffff, 0.7)
-
-    dirLight.position.set(20, 20, 20)
-    dirLight.target.position.set(this.gridSize.x / 2, 0, this.gridSize.y / 2)
-    dirLight.shadow.mapSize.set(1024, 1024)
-    dirLight.shadow.radius = 7
-    dirLight.shadow.blurSamples = 20
-    dirLight.shadow.camera.top = 30
-    dirLight.shadow.camera.bottom = -30
-    dirLight.shadow.camera.left = -30
-    dirLight.shadow.camera.right = 30
-
-    dirLight.castShadow = true
-
-    this.scene.add(ambLight, dirLight)
   }
 
   /**
@@ -114,11 +87,6 @@ export default new (class ThreeSceneCreator {
    */
   private createControls() {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-    this.controls.enableDamping = true
-    this.controls.enableZoom = false
-    this.controls.enablePan = false
-    this.controls.enableRotate = false
-    this.controls.target.set(this.gridSize.x / 2, 0, this.gridSize.y / 2)
   }
 
   /**
