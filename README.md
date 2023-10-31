@@ -4,7 +4,7 @@
 
 [预览入口（Github）](https://liamwu50.github.io/three-vite-starter)
 
-![banner]([https://raw.githubusercontent.com/LiamWu50](https://raw.githubusercontent.com/LiamWu50/three-vite-starter/main/public/banner.png))
+![banner](https://raw.githubusercontent.com/LiamWu50/three-vite-starter/main/public/banner.png))
 
 ## 💡 查看示例
 
