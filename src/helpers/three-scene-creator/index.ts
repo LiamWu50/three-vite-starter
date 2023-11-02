@@ -1,5 +1,8 @@
 import {
   AxesHelper,
+  BoxGeometry,
+  Mesh,
+  MeshNormalMaterial,
   PerspectiveCamera,
   Scene,
   Vector3,
@@ -43,6 +46,12 @@ export default new (class ThreeSceneCreator {
   private createScene() {
     this.scene = new Scene()
 
+    const material = new MeshNormalMaterial()
+    const geometry = new BoxGeometry(1, 1, 1)
+
+    const mesh = new Mesh(geometry, material)
+    this.scene.add(mesh)
+
     const axesHelper = new AxesHelper(3)
     this.scene.add(axesHelper)
   }
@@ -54,7 +63,7 @@ export default new (class ThreeSceneCreator {
     const fov = 60
     const aspect = this.sizes.width / this.sizes.height
     this.camera = new PerspectiveCamera(fov, aspect, 0.1)
-    this.camera.position.set(0, 35, 25)
+    this.camera.position.set(4, 4, 4)
     this.camera.lookAt(new Vector3(0, 2.5, 0))
   }
 
